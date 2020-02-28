@@ -11,7 +11,7 @@ template<class ...Args>
 class Router
 {
 public:
-    typedef std::function<void(const Route::RouteMatch&, Args&&...)> Callback;
+    typedef std::function<void(const Route::RouteMatch&, Args...)> Callback;
     typedef std::unique_ptr<Route> RoutePtr;
     typedef std::function<void(Route*)> WalkFunc;
     typedef std::function<Callback(Callback)> Middleware;
@@ -35,7 +35,7 @@ public:
     //Match 进行method和path的匹配，method将匹配Route的Method
     //path作为匹配的路径，args为匹配成功后，传入回调函数的参数
     //若匹配成功，返回true，否则返回false
-    bool  Match(const std::string &method ,const std::string &path, Args&&...args);
+    bool  Match(const std::string &method ,const std::string &path, Args...args);
     //Walk 遍历所有Route信息，并传入到func中
     void  Walk(WalkFunc func) const;
     //Use  添加一个中间件到Router中
@@ -92,7 +92,7 @@ Route *Router<Args...>::Name(const std::string &name)
 }
 
 template<class ...Args>
-bool Router<Args...>::Match(const std::string &method, const std::string &path, Args&&... args)
+bool Router<Args...>::Match(const std::string &method, const std::string &path, Args... args)
 {
     Route::RouteMatch routeMatch;
     for (size_t i = 0; i < m_routes.size(); ++i) {
