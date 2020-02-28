@@ -1,6 +1,24 @@
 # router-pp
 基于C++的Router，用于注册路由，并自动匹配调用对应的路由，支持中间件注册
 
+##### Route *NewRoute(const std::string &name, Callback cb, std::initializer_list<Middleware> &&middlwares = {});
+    NewRoute 创建一个Route，其中若name不为空，那么将name作为名称进行注册cb作为回调函数，用于匹配响应，middlewares作为中间件集合，该middleware仅用于当前创建的Route
+    若成功，返回一个新的Route，否则返回nullptr
+    
+##### Route *Name(const std::string &name);
+    Name 返回name作为名称的Route
+    
+##### bool  Match(const std::string &method ,const std::string &path, Args&&...args);
+    Match 进行method和path的匹配，method将匹配Route的Method，path作为匹配的路径，args为匹配成功后，传入回调函数的参数
+    若匹配成功，返回true，否则返回false
+
+##### void  Walk(WalkFunc func) const;
+    Walk 遍历所有Route信息，并传入到func中
+
+##### void  Use(Middleware m);
+    Use  添加一个中间件到Router中
+    注：该函数注册的中间件为全局使用，均先于所有Route注册的中间件调用
+
 ##### bool Match(const std::string &path, RouteMatch &routeMatch);
     Match 匹配path路径，若匹配成功，则返回true，并将匹配信息写入到routeMatch中，若匹配失败，那么返回false
 
@@ -42,7 +60,7 @@
               };
           }
         })->Path("/{a:\\d+}/{b:\\d+}")->Methods({"GET"});
-    
+
         a.Use([](Router<int>::Callback fn) ->           Router<int>::Callback {
             return [fn](const Route::RouteMatch &m, int c) {
                 std::cout << "hello" << '\n';
