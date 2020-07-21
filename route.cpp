@@ -9,7 +9,7 @@ static bool splitBracket(const std::string &s, std::vector<size_t> &bs) {
         switch (s[i]) {
         case '{':
             if (leftBracket != -1) {
-                return false
+                return false;
             }
             leftBracket = i;
             break;
